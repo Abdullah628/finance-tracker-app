@@ -17,9 +17,7 @@ interface FinancialRecordContextType {
   // deleteRecord: (id: string) =>void;
 }
 
-export const FinancialRecordsContext = createContext<
-  FinancialRecordContextType | undefined
->(undefined);
+export const FinancialRecordsContext = createContext<FinancialRecordContextType|undefined>(undefined);
 
 export const FinancialRecordsProvider = ({
   children,
@@ -31,7 +29,10 @@ export const FinancialRecordsProvider = ({
   const addRecord = async(record: FinancialRecord) => {
     const res = await fetch("http://localhost:3001/financial-records", {
       method: "POST",
-      body: JSON.stringify(record)
+      body: JSON.stringify(record),
+      headers: {
+        "content-type": "application/json",
+      }
     })
 
     try{
@@ -48,14 +49,14 @@ export const FinancialRecordsProvider = ({
     <FinancialRecordsContext.Provider value={{ records, addRecord }}>
       {" "}
       {children}
+      
     </FinancialRecordsContext.Provider>
   );
 };
 
+
 export const useFinancialRecords = () => {
-  const context = useContext<FinancialRecordContextType | undefined>(
-    FinancialRecordsContext
-  );
+  const context = useContext<FinancialRecordContextType|undefined>(FinancialRecordsContext);
 
   if(!context){
     throw new Error("useFinancialRecords must be used within a FinancialProvider");
